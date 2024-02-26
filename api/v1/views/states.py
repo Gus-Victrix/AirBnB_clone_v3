@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from flask import jsonify, redirect, abort
+from flask import jsonify, redirect, abort, request
 from api.v1.views import app_views
 from models.state import State
 from models import storage
@@ -35,3 +35,14 @@ def rm_state(state_id):
     storage.delete(state)
     storage.save()
     return (jsonify({}))
+
+@app_views.route("/states", methods=['POST'], strict_slashes=False)
+def mk_state():
+    """Create a new state"""
+    if not request.json:
+        return (jsonify({"error": "Not a JSON"}), 400)
+    if "name" not in request.json:
+        return (jsonify({"error": "Missing name"}), 400)
+    state = State(**request.json)
+    state.save()
+    return (jsonify(state.to_dict()), 201)
