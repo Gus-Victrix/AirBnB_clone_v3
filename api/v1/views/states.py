@@ -46,3 +46,17 @@ def mk_state():
     state = State(**request.json)
     state.save()
     return (jsonify(state.to_dict()), 201)
+
+@app_view.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
+def up_state(state_id):
+    """Update a state's details"""
+    state = storage.get(State, state_id)
+    if state is None:
+        abort(404)
+    if not request.json:
+        return (jsonify({"error": "Not a JSON"}), 400)
+    for key, value in request.json.items():
+        if key not in ["id", "created_at", "updated_at"]:
+            setattr(state, key, value)
+    state.save()
+    return (jsonify(state.to_dict()), 200)
