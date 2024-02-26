@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+"""Routing for states module"""
+
 from flask import jsonify, redirect, abort, request
 from api.v1.views import app_views
 from models.state import State
@@ -36,6 +38,7 @@ def rm_state(state_id):
     storage.save()
     return (jsonify({}))
 
+
 @app_views.route("/states", methods=['POST'], strict_slashes=False)
 def mk_state():
     """Create a new state"""
@@ -47,7 +50,8 @@ def mk_state():
     state.save()
     return (jsonify(state.to_dict()), 201)
 
-@app_view.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
+
+@app_views.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
 def up_state(state_id):
     """Update a state's details"""
     state = storage.get(State, state_id)
